@@ -1,6 +1,6 @@
 ---
 title: "Stock Dashboard:"
-subtitle: "Costco"
+subtitle: "Costco Wholesale Corp."
 author: "Penelope Pooler"
 format: dashboard
 ---
