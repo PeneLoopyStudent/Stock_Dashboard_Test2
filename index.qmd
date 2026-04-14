@@ -103,7 +103,7 @@ fun4 <- function(my_data, plot_title){
 stock_symbol <- "COST"       # enter stock symbol in quotes
 stock_name <- "Costco"  # stock name used plot and for accompanying text
 start_date <- "2010-01-01"     # enter start date in quotes as shown
-end_date <- "2026-04-11"       # enter end date in quotes as shown
+end_date <- "2026-04-13"       # enter end date in quotes as shown
 n_forecasts <- 12              # number of monthly forecasts requested
 
 getSymbols(stock_symbol, from = start_date, to = end_date) # don't edit this command
@@ -214,7 +214,7 @@ Adj. Closing Value:
 #|label: Create Plots for Comparisons
 
 start_date1 <- ymd("2024-01-02")
-end_date1 <- ymd("2026-04-11")
+end_date1 <- ymd("2026-04-13")
 
 CHOSEN <- window(COST, start=start_date1, end=end_date1)
 
@@ -364,11 +364,7 @@ Arnold J (2024). *ggthemes: Extra Themes, Scales and Geoms
 for 'ggplot2'*. R package version 5.1.0,
 <https://CRAN.R-project.org/package=ggthemes>.
 
-Bache S, Wickham H (2025). *magrittr: A Forward-Pipe
-Operator for R*. doi:10.32614/CRAN.package.magrittr
-<https://doi.org/10.32614/CRAN.package.magrittr>, R package
-version 2.0.4,
-<https://CRAN.R-project.org/package=magrittr>.
+Bache S, Wickham H (2026). _magrittr: A Forward-Pipe Operator for R_. doi:10.32614/CRAN.package.magrittr <https://doi.org/10.32614/CRAN.package.magrittr>, R package version 2.0.5, <https://CRAN.R-project.org/package=magrittr>.
 
 Hyndman R, Athanasopoulos G, Bergmeir C, Caceres G, Chhay L,
 O'Hara-Wild M, Petropoulos F, Razbash S, Wang E, Yasmeen F
@@ -390,8 +386,7 @@ Posit team (2026). RStudio: Integrated Development
 Environment for R. Posit Software, PBC, Boston, MA. URL
 http://www.posit.co/.
 
-Quarto Development Team. Quarto. Version 1.9.36. 2026.
-<https://quarto.org/>.
+Quarto Development Team (2026). Quarto. Version 1.9.36. <https://quarto.org/>.
 
 R Core Team (2026). *R: A Language and Environment for
 Statistical Computing*. R Foundation for Statistical
