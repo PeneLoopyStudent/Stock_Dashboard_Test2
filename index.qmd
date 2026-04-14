@@ -94,7 +94,6 @@ fun4 <- function(my_data, plot_title){
 
 ```
 
-
 ```{r results='hide'}
 #|label: Specify Dashboard Inputs
 
@@ -111,7 +110,6 @@ getSymbols(stock_symbol, from = start_date, to = end_date) # don't edit this com
 db <- fun1(COST)             # enter stock symbol without quotes
 
 ```
-
 
 ```{r}
 #|label: Stock Data Mgmt and Forecasts
@@ -143,51 +141,51 @@ db_fc_plot <- autoplot(db_fc) +
 
 ```
 
+
+# Introduction
+
+## Row
+
+### Column {width=70%}
+
+![**Floor of NYSE - Spencer Platt/Getty Images**](img/nyse1.png){height="5.5in"}
+
+
 # Stock Time Series and Current Values
 
-## Row {height=15%}
+## Row {height="15%"}
 
-::: {.valuebox}
-
+::: valuebox
 Last Update:
 
 `r stamp("Saturday, January 1, 1999", quiet = T)(last$date)`
-
 :::
 
-::: {.valuebox}
-
-Opening Value:    
+::: valuebox
+Opening Value:
 
 `r last$open |> round(2)`
-
 :::
 
-::: {.valuebox}
-
+::: valuebox
 Highest Value:
 
 `r last$high |> round(2)`
-
 :::
 
-::: {.valuebox}
-
+::: valuebox
 Lowest Value:
 
 `r last$low |> round(2)`
-
 :::
 
-::: {.valuebox}
-
+::: valuebox
 Adj. Closing Value:
 
 `r last$adj |> round(2)`
-
 :::
 
-## Row {height=85% color="Info"}
+## Row {height="85%" color="Info"}
 
 ```{r}
 #|label: Create Interactive Dygraph
@@ -206,7 +204,6 @@ Adj. Closing Value:
                  Label3="2025 Inauguration Day"))
 
 ```
-
 
 # Index Comparisons '24-'26
 
@@ -230,7 +227,7 @@ cp4 <- fun4(my_data=DJIA, plot_title = "Dow Jones Industrial Average")
 
 ```
 
-## Row {height=50%}
+## Row {height="50%"}
 
 ```{r}
 #|label: Chosen Stock
@@ -246,7 +243,7 @@ cp2
 
 ```
 
-## Row {height=50%}
+## Row {height="50%"}
 
 ```{r}
 #|label: Nasdaq 100
@@ -262,12 +259,11 @@ cp4
 
 ```
 
-
 # Forecast Plot
 
 ## Row
 
-### Column {width=75%}
+### Column {width="75%"}
 
 ```{r}
 #|label: Display Forecast Plot
@@ -276,29 +272,33 @@ db_fc_plot
 
 ```
 
+### Column {width="25%"}
 
-### Column {width=25%}
-
-- The forecast plot shows the forecasted **`r stock_name`** stock prices for the next `r n_forecasts` months.  
-
-<br>
-
-- The plot also shows the 80% prediction interval in dark purple and the 95% prediction interval in light purple.
+-   The forecast plot shows the forecasted
+    **`r stock_name`** stock prices for the next
+    `r n_forecasts` months.
 
 <br>
 
-- The numeric values for these forecasted values and prediction intervals are shown in the next tab.
+-   The plot also shows the 80% prediction interval in dark
+    purple and the 95% prediction interval in light purple.
 
+<br>
+
+-   The numeric values for these forecasted values and
+    prediction intervals are shown in the next tab.
 
 # Forecasted Values Table
 
 ## Row
 
-The table below shows the forecast values and 80% and 95% prediction intervals for the `r n_forecasts` requested forecasts for the **`r stock_name`** stock.
+The table below shows the forecast values and 80% and 95%
+prediction intervals for the `r n_forecasts` requested
+forecasts for the **`r stock_name`** stock.
 
 ## Row
 
-### Column {width=75%}
+### Column {width="75%"}
 
 ```{r}
 #|label: Display Numerical Forecasts
@@ -307,21 +307,24 @@ The table below shows the forecast values and 80% and 95% prediction intervals f
 
 ```
 
+### Column {width="25%"}
 
-### Column {width=25%}
-
-- In March of `r year(end_date1)+1`, the **`r stock_name`** stock price is forecasted to be `r db_fc$mean[11] |> round()` dollars.
+-   In March of `r year(end_date1)+1`, the
+    **`r stock_name`** stock price is forecasted to be
+    `r db_fc$mean[11] |> round()` dollars.
 
 <br>
 
-- The width of the 80% prediction interval for this forecast in March of `r year(end_date1)+1` is `r (db_fc$upper[11,1] - db_fc$lower[11,1]) |> round()` dollars.
-
+-   The width of the 80% prediction interval for this
+    forecast in March of `r year(end_date1)+1` is
+    `r (db_fc$upper[11,1] - db_fc$lower[11,1]) |> round()`
+    dollars.
 
 # Model Residuals
 
 ## Row
 
-### Column {width=75%}
+### Column {width="75%"}
 
 ```{r}
 #|label: Check Residuals
@@ -330,23 +333,25 @@ checkresiduals(db_fc, test = F)
 
 ```
 
-### Column {width=25%}
+### Column {width="25%"}
 
-- These three residual plots allow the analyst to examine the distribution of the residuals of the modeled time series.
+-   These three residual plots allow the analyst to examine
+    the distribution of the residuals of the modeled time
+    series.
 
-- Despite increasing volatility, our stock price model is estimated to be `r db_pct_acc`% accurate.
+-   Despite increasing volatility, our stock price model is
+    estimated to be `r db_pct_acc`% accurate.
 
-- This doesn’t guarantee that forecasts will be `r db_pct_acc`% accurate but it does improve our chances of accurate forecasting.
-
+-   This doesn’t guarantee that forecasts will be
+    `r db_pct_acc`% accurate but it does improve our chances
+    of accurate forecasting.
 
 <br>
 
-- [Additional information about residual plots](https://otexts.com/fpp2/residuals.html){target="_blank"}
+-   [Additional information about residual
+    plots](https://otexts.com/fpp2/residuals.html){target="_blank"}
 
-
-
-
-#  About this Dashboard
+# About this Dashboard
 
 This dashboard was created using
 [Quarto](https://quarto.org/) in
@@ -364,7 +369,11 @@ Arnold J (2024). *ggthemes: Extra Themes, Scales and Geoms
 for 'ggplot2'*. R package version 5.1.0,
 <https://CRAN.R-project.org/package=ggthemes>.
 
-Bache S, Wickham H (2026). _magrittr: A Forward-Pipe Operator for R_. doi:10.32614/CRAN.package.magrittr <https://doi.org/10.32614/CRAN.package.magrittr>, R package version 2.0.5, <https://CRAN.R-project.org/package=magrittr>.
+Bache S, Wickham H (2026). *magrittr: A Forward-Pipe
+Operator for R*. doi:10.32614/CRAN.package.magrittr
+<https://doi.org/10.32614/CRAN.package.magrittr>, R package
+version 2.0.5,
+<https://CRAN.R-project.org/package=magrittr>.
 
 Hyndman R, Athanasopoulos G, Bergmeir C, Caceres G, Chhay L,
 O'Hara-Wild M, Petropoulos F, Razbash S, Wang E, Yasmeen F
@@ -386,7 +395,8 @@ Posit team (2026). RStudio: Integrated Development
 Environment for R. Posit Software, PBC, Boston, MA. URL
 http://www.posit.co/.
 
-Quarto Development Team (2026). Quarto. Version 1.9.36. <https://quarto.org/>.
+Quarto Development Team (2026). Quarto. Version 1.9.36.
+<https://quarto.org/>.
 
 R Core Team (2026). *R: A Language and Environment for
 Statistical Computing*. R Foundation for Statistical
