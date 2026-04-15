@@ -141,19 +141,18 @@ db_fc_plot <- autoplot(db_fc) +
 
 ```
 
-
 # Introduction
 
 ## Row
 
-### Column {width=70%}
+### Column {width="70%"}
 
-![**Floor of NYSE - Spencer Platt/Getty Images**](img/nyse1.png){height="5.5in"}
+![**Floor of NYSE - Spencer Platt/Getty
+Images**](img/nyse1.png){height="5.5in"}
 
-### Column {width=30%}
+### Column {width="30%"}
 
-- This dashboard incorporates forecasting skills from **BUA 345 - Business Analytics** into a presentation format.
-
+This dashboard incorporates forecasting skills from **BUA 345 - Business Analytics** into a dashboard presentation format.
 
 # Stock Time Series and Current Values
 
