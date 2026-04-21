@@ -18,6 +18,7 @@ options(scipen=100)
 # avoid system issues
 options(install.packages.check.source = "no")
 
+
 # install helper package that loads and installs other packages, if needed
 if (!require("pacman")) install.packages("pacman", repos = "http://lib.stat.cmu.edu/R/CRAN/")
 
