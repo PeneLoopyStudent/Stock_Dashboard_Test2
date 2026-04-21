@@ -24,7 +24,8 @@ if (!require("pacman")) install.packages("pacman", repos = "http://lib.stat.cmu.
 # install and load required packages
 # pacman should be first package in parentheses and then list others
 pacman::p_load(pacman,tidyverse, magrittr, knitr, forecast, kableExtra,
-               tidyquant, lubridate, ggthemes, RColorBrewer, dygraphs)
+               tidyquant, lubridate, ggthemes, RColorBrewer, 
+               dygraphs, renv)
 
 # verify packages
 #p_loaded()
@@ -37,6 +38,7 @@ pacman::p_load(pacman,tidyverse, magrittr, knitr, forecast, kableExtra,
 
 # Click green triangle to run these functions
 
+# Function 1 Formats the imported stock data.
 fun1 <- function(my_data){
   dbd <- my_data |> 
   fortify.zoo() |> as_tibble(.name_repair = "minimal") 
@@ -44,14 +46,14 @@ fun1 <- function(my_data){
   dbd
 }
 
-
+# Function 2 saves the most recent day of data as a separate dataset.
 fun2 <- function(my_data){
   last <- my_data |>
     filter(date==max(date))
   last
 }
 
-
+# Function 3 creates an interactive dygraph with event lines and shaded regions.
 fun3 <- function(my_data,
                  plot_title,
                  Event1,
@@ -63,9 +65,11 @@ fun3 <- function(my_data,
                  LabelS1,
                  LabelS2,
                  Event3,
-                 Label3){
+                 Label3,
+                 Event4,
+                 Label4){
   
-  dg <-  dygraph(my_data[,c(2,3,6)], main=plot_title) |>
+  dg1 <-  dygraph(my_data[,c(2,3,6)], main=plot_title) |>
     dySeries(colnames(my_data[,6]), label="Adj. Close", color= "green") |>
     dySeries(colnames(my_data[,2]), label="High", color= "blue") |>
     dySeries(colnames(my_data[,3]), label="Low", color= "red") |>
@@ -78,11 +82,13 @@ fun3 <- function(my_data,
     dyEvent(Shade1, LabelS1, labelLoc = "bottom") |>
     dyEvent(Shade2, LabelS2, labelLoc = "bottom") |>
     dyEvent(Event3, Label3, strokePattern = "dotted", labelLoc = "bottom") |>
+    dyEvent(Event4, Label4, strokePattern = "dotted", labelLoc = "bottom") |>
     dyRangeSelector()
-  dg
+  dg1
 }
 
 
+# Function 4 makes a dygraph without event lines and shaded regions.
 fun4 <- function(my_data, plot_title){
   dg2 <-  dygraph(my_data[,c(2,3,6)], main=plot_title) |>
     dySeries(colnames(my_data[,6]), label="Adj. Close", color= "green") |>
@@ -94,6 +100,7 @@ fun4 <- function(my_data, plot_title){
 
 ```
 
+
 ```{r results='hide'}
 #|label: Specify Dashboard Inputs
 
@@ -102,7 +109,7 @@ fun4 <- function(my_data, plot_title){
 stock_symbol <- "COST"       # enter stock symbol in quotes
 stock_name <- "Costco"  # stock name used plot and for accompanying text
 start_date <- "2010-01-01"     # enter start date in quotes as shown
-end_date <- "2026-04-13"       # enter end date in quotes as shown
+end_date <- "2026-04-21"       # enter end date in quotes as shown
 n_forecasts <- 12              # number of monthly forecasts requested
 
 getSymbols(stock_symbol, from = start_date, to = end_date) # don't edit this command
@@ -111,11 +118,14 @@ db <- fun1(COST)             # enter stock symbol without quotes
 
 ```
 
+
 ```{r}
 #|label: Stock Data Mgmt and Forecasts
 
+# saves last day or stock information
 last <- fun2(db) 
 
+# filters stock data to first day of each month
 db2 <- db |>
   mutate(year=year(date),
          month=month(date)) |>
@@ -127,13 +137,15 @@ db_ts <- ts(db2$adj, freq=12,
             start=c(min(db2$year), 
                     min(db2$month))) # create time series
 
+# creates forecast model and forecasts for next 12 months
 db_fc <- db_ts |> 
   auto.arima(ic="aic", seasonal=F) |>
   forecast(h=n_forecasts)
 
+# calculates accuracy
 db_pct_acc <- (100-accuracy(db_fc)[5]) |> round(1)
 
-
+# create forcast plot
 db_fc_plot <- autoplot(db_fc) + 
   labs(y =paste(stock_name, "Stock Price ($ US)") ,
        caption = paste0("100 - MAPE = Model % Accuracy: ", db_pct_acc, "%")) + 
@@ -141,58 +153,69 @@ db_fc_plot <- autoplot(db_fc) +
 
 ```
 
+
 # Introduction
 
 ## Row
 
-### Column {width="70%"}
+### Column {width=70%}
 
-![**Floor of NYSE - Spencer Platt/Getty
-Images**](img/nyse1.png){height="5.5in"}
+![**Floor of NYSE - Spencer Platt/Getty Images**](img/nyse1.png){height="5.5in"}
 
-### Column {width="30%"}
+### Column {width=30%}
 
-This dashboard incorporates forecasting skills from **BUA 345 - Business Analytics** into a dashboard presentation format.
+This website incorporates forecasting skills from **BUA 345 - Business Analytics** into a dashboard presentation format.
 
 # Stock Time Series and Current Values
 
-## Row {height="15%"}
+## Row {height=15%}
 
-::: valuebox
+::: {.valuebox}
+
 Last Update:
 
 `r stamp("Saturday, January 1, 1999", quiet = T)(last$date)`
+
 :::
 
-::: valuebox
-Opening Value:
+::: {.valuebox}
+
+Opening Value:    
 
 `r last$open |> round(2)`
+
 :::
 
-::: valuebox
+::: {.valuebox}
+
 Highest Value:
 
 `r last$high |> round(2)`
+
 :::
 
-::: valuebox
+::: {.valuebox}
+
 Lowest Value:
 
 `r last$low |> round(2)`
+
 :::
 
-::: valuebox
+::: {.valuebox}
+
 Adj. Closing Value:
 
 `r last$adj |> round(2)`
+
 :::
 
-## Row {height="85%" color="Info"}
+## Row {height=85% color="Info"}
 
 ```{r}
 #|label: Create Interactive Dygraph
 
+# replace SYMBOL with stock symbol without quotes
 (dg <- fun3(my_data=COST,
                  plot_title=paste(stock_name, "Stock Price"),
                  Event1="2016-11-8",
@@ -204,7 +227,9 @@ Adj. Closing Value:
                  LabelS1="Covid Lockdown Began",
                  LabelS2="Covid Restrictions Ended",
                  Event3="2025-1-20",
-                 Label3="2025 Inauguration Day"))
+                 Label3="2025 Inauguration Day",
+                 Event4="2026-02-28",
+                 Label4="War in Iran Began"))
 
 ```
 
@@ -214,23 +239,27 @@ Adj. Closing Value:
 #|label: Create Plots for Comparisons
 
 start_date1 <- ymd("2024-01-02")
-end_date1 <- ymd("2026-04-13")
+end_date1 <- ymd("2026-04-21")
 
+# replace SYMBOL with stock symbol without quotes
 CHOSEN <- window(COST, start=start_date1, end=end_date1)
 
 cp1 <- fun4(my_data=CHOSEN, plot_title = stock_name)
 
+# downloads indices for comparisons
 getSymbols("^SPX", from = start_date1, to = end_date1)
 getSymbols("NQ=F", from = start_date1, to = end_date1)
 getSymbols("DJIA", from = start_date1, to = end_date1)
 
+# creates plots for comparison plot page
 cp2 <- fun4(my_data=SPX, plot_title = "S&P 500")
 cp3 <- fun4(my_data=`NQ=F`, plot_title = "Nasdaq 100")
 cp4 <- fun4(my_data=DJIA, plot_title = "Dow Jones Industrial Average")
 
 ```
 
-## Row {height="50%"}
+
+## Row {height=50%}
 
 ```{r}
 #|label: Chosen Stock
@@ -246,7 +275,7 @@ cp2
 
 ```
 
-## Row {height="50%"}
+## Row {height=50%}
 
 ```{r}
 #|label: Nasdaq 100
@@ -262,11 +291,12 @@ cp4
 
 ```
 
+
 # Forecast Plot
 
 ## Row
 
-### Column {width="75%"}
+### Column {width=75%}
 
 ```{r}
 #|label: Display Forecast Plot
@@ -275,33 +305,29 @@ db_fc_plot
 
 ```
 
-### Column {width="25%"}
 
--   The forecast plot shows the forecasted
-    **`r stock_name`** stock prices for the next
-    `r n_forecasts` months.
+### Column {width=25%}
 
-<br>
-
--   The plot also shows the 80% prediction interval in dark
-    purple and the 95% prediction interval in light purple.
+- The forecast plot shows the forecasted **`r stock_name`** stock prices for the next `r n_forecasts` months.  
 
 <br>
 
--   The numeric values for these forecasted values and
-    prediction intervals are shown in the next tab.
+- The plot also shows the 80% prediction interval in dark purple and the 95% prediction interval in light purple.
+
+<br>
+
+- The numeric values for these forecasted values and prediction intervals are shown in the next tab.
+
 
 # Forecasted Values Table
 
 ## Row
 
-The table below shows the forecast values and 80% and 95%
-prediction intervals for the `r n_forecasts` requested
-forecasts for the **`r stock_name`** stock.
+The table below shows the forecast values and 80% and 95% prediction intervals for the `r n_forecasts` requested forecasts for the **`r stock_name`** stock.
 
 ## Row
 
-### Column {width="75%"}
+### Column {width=75%}
 
 ```{r}
 #|label: Display Numerical Forecasts
@@ -310,24 +336,21 @@ forecasts for the **`r stock_name`** stock.
 
 ```
 
-### Column {width="25%"}
 
--   In March of `r year(end_date1)+1`, the
-    **`r stock_name`** stock price is forecasted to be
-    `r db_fc$mean[11] |> round()` dollars.
+### Column {width=25%}
+
+- In March of `r year(end_date1)+1`, the **`r stock_name`** stock price is forecasted to be `r db_fc$mean[11] |> round()` dollars.
 
 <br>
 
--   The width of the 80% prediction interval for this
-    forecast in March of `r year(end_date1)+1` is
-    `r (db_fc$upper[11,1] - db_fc$lower[11,1]) |> round()`
-    dollars.
+- The width of the 80% prediction interval for this forecast in March of `r year(end_date1)+1` is `r (db_fc$upper[11,1] - db_fc$lower[11,1]) |> round()` dollars.
+
 
 # Model Residuals
 
 ## Row
 
-### Column {width="75%"}
+### Column {width=75%}
 
 ```{r}
 #|label: Check Residuals
@@ -336,23 +359,18 @@ checkresiduals(db_fc, test = F)
 
 ```
 
-### Column {width="25%"}
+### Column {width=25%}
 
--   These three residual plots allow the analyst to examine
-    the distribution of the residuals of the modeled time
-    series.
+- These three residual plots allow the analyst to examine the distribution of the residuals of the modeled time series.
 
--   Despite increasing volatility, our stock price model is
-    estimated to be `r db_pct_acc`% accurate.
+- Despite increasing volatility, our stock price model is estimated to be `r db_pct_acc`% accurate.
 
--   This doesn’t guarantee that forecasts will be
-    `r db_pct_acc`% accurate but it does improve our chances
-    of accurate forecasting.
+- This doesn’t guarantee that forecasts will be `r db_pct_acc`% accurate but it does improve our chances of accurate forecasting.
+
 
 <br>
 
--   [Additional information about residual
-    plots](https://otexts.com/fpp2/residuals.html){target="_blank"}
+- [Additional information about residual plots](https://otexts.com/fpp2/residuals.html){target="_blank"}
 
 # About this Dashboard
 
